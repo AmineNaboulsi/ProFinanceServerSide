@@ -6,11 +6,15 @@ const modelLk = mongoose.Schema({
     version : String ,
     isMonopost : Boolean,
     licencekeyS:String,
+    lkSNumber : Number,
     licencekeyM:String,
+    lkMNumber : Number,
     expireon:Date,
-    etat:String,//En Utilisation  - Annuler
+    creation_date:Date,
+    etat:String,
     isvalide : Boolean,
-    Tk : String
+    Tk : String,
+    date_activation : Date,
 })
 
 

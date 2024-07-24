@@ -5,23 +5,26 @@ require('dotenv').config();
 
 
 const newkey = async (req, res) => {
-    const { client, type, version, isMonopost, expireon, etat, isvalide } = req.body;
+    const { client, type, version, isMonopost, expireon, etat } = req.body;
 
-    if (!client || !type || !version || isMonopost === undefined || !expireon || !etat || isvalide === undefined) {
+    if (!client || !type || !version || isMonopost === undefined || !expireon || !etat) {
         return res.status(400).json({ "error": "Failed, missing parameters" });
     }
     const check = await Licence.findOne({client:client});
     if(!check){
         try {
         
-            const timestamp = new Date().getTime(); // Use current timestamp as a unique component
+            const timestamp = new Date().getTime();
     
             const licencekeyS = generateLicenseKey(client, `S-${timestamp}`);
-            const licencekeyM = "";
+            let licencekeyM = "";
             if(!isMonopost)licencekeyM = generateLicenseKey(client, `M-${timestamp}`);
             
             const Tk = generateLicenseKey(client, `Tk-${timestamp}`);
-    
+
+            const creation_date = new Date();
+
+            const isvalide = true;
             const newLicence = new Licence({
                 client,
                 type,
@@ -30,15 +33,15 @@ const newkey = async (req, res) => {
                 expireon,
                 etat,
                 isvalide,
+                creation_date ,
                 licencekeyS,
                 licencekeyM,
                 Tk
             });
     
             await newLicence.save();
-            return res.status(201).json({ status: "Created successfully", newkey: newLicence });
+            return res.status(201).json({ status: "Created successfully"});
         } catch (error) {
-            console.error(error);
             return res.status(500).json({ error: "Server Error" });
         }
     }else{
