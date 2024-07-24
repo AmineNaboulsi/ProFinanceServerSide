@@ -1,13 +1,15 @@
 const Licence = require("../models/modelLicence");
+const usermodel = require("../models/user");
+
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto"); 
 require('dotenv').config();
 
 
 const newkey = async (req, res) => {
-    const { client, type, version, isMonopost, expireon, etat } = req.body;
+    const { client, type, version, isMonopost, expireon, etat ,usertk} = req.body;
 
-    if (!client || !type || !version || isMonopost === undefined || !expireon || !etat) {
+    if (!client || !type || !version || isMonopost === undefined || !expireon || !etat || !usertk) {
         return res.status(400).json({ "error": "Failed, missing parameters" });
     }
     const check = await Licence.findOne({client:client});
@@ -25,6 +27,12 @@ const newkey = async (req, res) => {
             const creation_date = new Date();
 
             const isvalide = true;
+            const lkMNumber = 5;
+            const lkSNumber = 1;
+            const userI = await usermodel.findOne({ token: usertk })
+            let userinfo = "";
+            if(userI)userinfo = userI.user;
+            else userinfo = 'unkuwn';
             const newLicence = new Licence({
                 client,
                 type,
@@ -36,7 +44,8 @@ const newkey = async (req, res) => {
                 creation_date ,
                 licencekeyS,
                 licencekeyM,
-                Tk
+                Tk,
+                userinfo
             });
     
             await newLicence.save();

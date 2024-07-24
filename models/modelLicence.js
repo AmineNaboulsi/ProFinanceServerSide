@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { userInfo } = require("os");
 
 const modelLk = mongoose.Schema({
     client:String ,
@@ -15,6 +16,7 @@ const modelLk = mongoose.Schema({
     isvalide : Boolean,
     Tk : String,
     date_activation : Date,
+    userinfo : String
 })
 
 
