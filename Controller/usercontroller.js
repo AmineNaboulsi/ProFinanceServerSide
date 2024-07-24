@@ -56,6 +56,27 @@ const loginuser = async(req , res) => {
     }
     
 }
+
+const validate_token = async(req , res) => {
+    const {usertk }  = req.body;
+    if(!usertk){
+        return res.json({error :"Error"});
+    }
+    try{
+        const checkTK = await usermodel.findOne({token : usertk});
+        if(checkTK){
+            res.json({isValid : true })  ; 
+            
+        }else{
+            res.json({isValid : false })  ; 
+        }
+    }catch(error){
+        console.log("ERROR / "+error)
+        res.status(404).json({error :error});
+    }
+    
+}
+
 module.exports = {
-    adduser , loginuser
+    adduser , loginuser , validate_token
 };
