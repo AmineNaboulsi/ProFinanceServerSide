@@ -31,25 +31,29 @@ const newkey = async (req, res) => {
             const lkSNumber = 1;
             const userI = await usermodel.findOne({ token: usertk })
             let userinfo = "";
-            if(userI)userinfo = userI.user;
-            else userinfo = 'unkuwn';
-            const newLicence = new Licence({
-                client,
-                type,
-                version,
-                isMonopost,
-                expireon,
-                etat,
-                isvalide,
-                creation_date ,
-                licencekeyS,
-                licencekeyM,
-                Tk,
-                userinfo
-            });
-    
-            await newLicence.save();
-            return res.status(201).json({ status: "Created successfully"});
+            if(userI){
+                userinfo = userI.user;
+                const newLicence = new Licence({
+                    client,
+                    type,
+                    version,
+                    isMonopost,
+                    expireon,
+                    etat,
+                    isvalide,
+                    creation_date ,
+                    licencekeyS,
+                    licencekeyM,
+                    Tk,
+                    userinfo
+                });
+        
+                await newLicence.save();
+                return res.status(201).json({ status: "Created successfully"});
+            }
+            else {
+                return res.status(201).json({ error: "no permission"});
+            }
         } catch (error) {
             return res.status(500).json({ error: "Server Error" });
         }
@@ -79,28 +83,50 @@ const generateLicenseKey = (client, uniqueComponent) => {
 }
 
 const listLicence = async (req, res) => {
-    try {
-        const licence = await Licence.find().
-                select({ __v: 0, Tk : 0});
-        res.json(licence);
+    const { usertk } = req.body;
 
-
-    } catch (error) {
-        res.json({ error: "Server error" + error })
+    if(!usertk){
+        res.json({ require:'e'});
+        return;
     }
+    const userI = await usermodel.findOne({ token: usertk })
+    if(userI){
+        try {
+            const licence = await Licence.find().
+                    select({ __v: 0, Tk : 0});
+            res.json(licence);
+    
+    
+        } catch (error) {
+            res.json({ error: "Server error" + error })
+        }
+    }else{
+        res.json([])
+    }
+   
 }
 const LicenceByID = async (req, res) => {
-    const { id } = req.body;
+    const { id , usertk } = req.body;
 
-    try {
-        const licence = await Licence.findById(id).
-                select({ __v: 0, Tk : 0});
-        res.json(licence);
-
-
-    } catch (error) {
-        res.json({ error: "Server error" + error })
+    if(!usertk){
+        res.json({ require:'e'});
+        return;
     }
+    const userI = await usermodel.findOne({ token: usertk })
+    if(userI){
+        try {
+            const licence = await Licence.findById(id).
+                    select({ __v: 0, Tk : 0});
+            res.json(licence);
+    
+    
+        } catch (error) {
+            res.json({ error: "Server error" + error })
+        }
+    }else{
+        res.json([])
+    }
+   
 }
 
 
