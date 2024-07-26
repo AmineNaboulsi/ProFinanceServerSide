@@ -108,7 +108,7 @@ const listLicence = async (req, res) => {
 const LicenceByID = async (req, res) => {
     const { id , usertk } = req.body;
 
-    if(!usertk){
+    if( !id || !usertk){
         res.json({ require:'e'});
         return;
     }
@@ -127,6 +127,35 @@ const LicenceByID = async (req, res) => {
         res.json([])
     }
    
+}
+
+const UseLicence = async (req, res) => {
+    const { NameD, licence, date_activation } = req.body;
+
+    if (!NameD || !licence || !date_activation) {
+        res.json({ require: 'e' });
+        return;
+    }
+
+    try {
+        const licencedata = await Licence.findOne({ licencekeyS: licence });
+        if (licencedata && licencedata.isvalide) {
+            const filter = { _id: licencedata._id };
+            const update = { userinfo : NameD , 
+                date_activation : date_activation,
+                isvalide : false ,
+                etat : "En utilisation"
+             };
+
+            const updatedLicence = await Licence.findByIdAndUpdate(filter, update, { new: true });
+
+            res.json({ status: "Updated successfully", data: updatedLicence });
+        } else {
+            res.json({ error: "Licence Expire" });
+        }
+    } catch (error) {
+        res.json({ error: "Server error: " + error });
+    }
 }
 
 
@@ -244,5 +273,6 @@ const lessquantity = async (req, res) => {
 module.exports = {
     newkey , 
     listLicence ,
-    LicenceByID
+    LicenceByID ,
+    UseLicence
 }
