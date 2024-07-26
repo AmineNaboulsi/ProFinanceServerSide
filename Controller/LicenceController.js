@@ -140,7 +140,7 @@ const UseLicence = async (req, res) => {
     try {
         const licencedata = await Licence.findOne({ licencekeyS: licence });
         if (!licencedata) {
-            res.json({ status : false , error: "Licence Not valide" });
+            return res.json({ status : false , error: "Licence Not valide" });
         }
         if (licencedata && licencedata.isvalide) {
             const filter = { _id: licencedata._id };
