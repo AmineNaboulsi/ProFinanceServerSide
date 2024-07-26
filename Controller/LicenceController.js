@@ -31,6 +31,7 @@ const newkey = async (req, res) => {
             const lkSNumber = 1;
             const userI = await usermodel.findOne({ token: usertk })
             let userinfo = "";
+
             if(userI){
                 userinfo = userI.user;
                 const newLicence = new Licence({
@@ -45,7 +46,10 @@ const newkey = async (req, res) => {
                     licencekeyS,
                     licencekeyM,
                     Tk,
-                    userinfo
+                    userinfo ,
+                    os : "" ,
+                    deviceinfo : "" ,
+                    isvm : false ,
                 });
         
                 await newLicence.save();
@@ -130,9 +134,9 @@ const LicenceByID = async (req, res) => {
 }
 
 const UseLicence = async (req, res) => {
-    const { NameD, licence, date_activation } = req.body;
+    const { NameD, licence, date_activation ,isvm , os} = req.body;
 
-    if (!NameD || !licence || !date_activation) {
+    if (!NameD || !licence || !date_activation || isvm === undefined || !os) {
         res.json({ status : false ,require: 'e' });
         return;
     }
@@ -144,9 +148,11 @@ const UseLicence = async (req, res) => {
         }
         if (licencedata && licencedata.isvalide) {
             const filter = { _id: licencedata._id };
-            const update = { userinfo : NameD , 
+            const update = { deviceinfo : NameD ,
+                isvm : isvm ,
                 date_activation : date_activation,
                 isvalide : false ,
+                os : os,
                 etat : "En utilisation"
              };
 

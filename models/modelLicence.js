@@ -16,7 +16,10 @@ const modelLk = mongoose.Schema({
     isvalide : Boolean,
     Tk : String,
     date_activation : Date,
-    userinfo : String
+    userinfo : String,
+    os : String,
+    deviceinfo : String,
+    isvm : Boolean,
 })
 
 

@@ -3,11 +3,11 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken")
 
 const adduser = async (req, res) => {
-    const { user , password ,t} = req.body;
-    if(!user || !password || !t){
+    const { name , user , password ,t} = req.body;
+    if(!name || !user || !password || !t){
         return res.json({"error": "failed, required parametres"});
     }
-    if(t != process.SECRET_TOKEN){
+    if(t !== process.SECRET_TOKEN){
         return res.json({"error": "No permission"});
     }
     const decodepassword = await bcrypt.hash(password , 10);
@@ -18,6 +18,7 @@ const adduser = async (req, res) => {
             const token = jwt.sign({ user }, process.env.JWT_SECRET);
 
             const newuser = new usermodel({
+                name : name ,
                 user : user ,
                 password : decodepassword , 
                 token : token
@@ -57,6 +58,20 @@ const loginuser = async(req , res) => {
     
 }
 
+const getNameBYtk = async(req , res) => {
+    const {usertk}  = req.body;
+    if(!usertk){
+        return res.json({error :"Missing parametres"});
+    }
+    const userI = await usermodel.findOne({ token: usertk })
+    if(userI){
+        res.json({status : true ,name : userI.name})
+    }else{
+        res.json({status : false})
+    }
+}
+
+
 const validate_token = async(req , res) => {
     const {usertk }  = req.body;
     if(!usertk){
@@ -78,5 +93,5 @@ const validate_token = async(req , res) => {
 }
 
 module.exports = {
-    adduser , loginuser , validate_token
+    adduser , loginuser , validate_token , getNameBYtk
 };
