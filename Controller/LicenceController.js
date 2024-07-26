@@ -116,7 +116,7 @@ const LicenceByID = async (req, res) => {
     if(userI){
         try {
             const licence = await Licence.findById(id).
-                    select({ __v: 0, Tk : 0});
+                    select({ __v: 0});
             res.json(licence);
     
     
@@ -133,12 +133,15 @@ const UseLicence = async (req, res) => {
     const { NameD, licence, date_activation } = req.body;
 
     if (!NameD || !licence || !date_activation) {
-        res.json({ require: 'e' });
+        res.json({ status : false ,require: 'e' });
         return;
     }
 
     try {
         const licencedata = await Licence.findOne({ licencekeyS: licence });
+        if (!licencedata) {
+            res.json({ status : false , error: "Licence Not valide" });
+        }
         if (licencedata && licencedata.isvalide) {
             const filter = { _id: licencedata._id };
             const update = { userinfo : NameD , 
@@ -149,12 +152,14 @@ const UseLicence = async (req, res) => {
 
             const updatedLicence = await Licence.findByIdAndUpdate(filter, update, { new: true });
 
-            res.json({ status: "Updated successfully", data: updatedLicence });
+            await updatedLicence.save();
+
+            res.json({ status: true , Tk :licencedata.Tk});
         } else {
-            res.json({ error: "Licence Expire" });
+            res.json({ status : false , error: "Licence Expire" });
         }
     } catch (error) {
-        res.json({ error: "Server error: " + error });
+        res.json({status : false , error: "Server error: " + error });
     }
 }
 
