@@ -3,9 +3,8 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const authMiddleware = async (req, res, next) => {
-    // Extract token from Authorization header
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer token
+    const token = authHeader && authHeader.split(' ')[1];
     
     if (!token) {
         return res.status(401).json({ message: 'No token provided' });

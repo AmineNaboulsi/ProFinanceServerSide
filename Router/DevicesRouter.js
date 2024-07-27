@@ -1,10 +1,10 @@
 const express =  require("express");
 const router  = express.Router();
 const Devicecontroller = require("../Controller/DevicesController");
-const authMiddleware = require("../middleware/authMiddleware"); // Adjust path as needed
+const auth = require("../Middleware/authMiddleware");
 
-router.post("/addmachine" ,authMiddleware, Devicecontroller.AddDevice);
-router.post("/getdevices" ,authMiddleware, Devicecontroller.GetDevice);
+router.post("/addmachine" ,auth, Devicecontroller.AddDevice);
+router.post("/getdevices" ,auth, Devicecontroller.GetDevice);
 
 
 
