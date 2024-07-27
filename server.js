@@ -4,6 +4,7 @@ const app = express();
 const cors =  require("cors")
 const LKRouter = require("./Router/LicenceRouter")
 const userRouter = require("./Router/userRouter")
+const deviceRouter = require("./Router/DevicesRouter")
 
 
 require("dotenv").config()
@@ -18,6 +19,7 @@ app.use(express.json());
 
 app.use("/lk", LKRouter);
 app.use("/user", userRouter);
+app.use("/device", deviceRouter);
 
 
 
