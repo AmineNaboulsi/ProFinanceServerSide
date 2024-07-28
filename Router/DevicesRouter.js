@@ -5,6 +5,7 @@ const auth = require("../Middleware/authMiddleware");
 
 router.post("/addmachine" ,auth, Devicecontroller.AddDevice);
 router.post("/getdevices" ,auth, Devicecontroller.GetDevice);
+router.post("/getdevicesbyc" ,auth, Devicecontroller.GetDeviceByClient);
 
 
 

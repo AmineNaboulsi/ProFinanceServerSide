@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
 const Device = new mongoose.Schema({
     name : {
-        type : String , 
+        type : String ,
         required : true
     },
     os : {
         type : String , 
-        unique : true , 
         required : true
     },
     datea : {
@@ -15,14 +16,24 @@ const Device = new mongoose.Schema({
     },
     etatmachine : {
         type : Boolean , 
-        unique : true , 
         required : true
     },
     isbanned : {
         type : Boolean , 
-        unique : true , 
         required : true
     },
+    client: {
+        type: Schema.Types.ObjectId,
+        required: true
+    },
+    clientname: {
+        type: String,
+        required: true
+    },
+    IsServer :{
+        type : Boolean , 
+        required : true
+    }
 })
 const DeviceM = mongoose.model("Devices" , Device);
 module.exports = DeviceM;

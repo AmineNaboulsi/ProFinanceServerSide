@@ -35,13 +35,45 @@ const AddDevice = async (req, res) => {
 
 const GetDevice = async (req, res) => {
 
-    const devices = await devicemodel.find().
-    select({ __v: 0});
-    res.json(devices);
+
+    const groupedDevices = await devicemodel.aggregate([
+        {
+            $group: {
+                _id: "$clientname",
+                count: { $sum: 1 },
+                devices: { $push: "$$ROOT" }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                clientname: "$_id",
+                count: 1,
+                devices: {
+                    _id: 1,
+                    name: 1,
+                    datea: 1,
+                    etatmachine: 1,
+                    isbanned: 1,
+                    client: 1,
+                    token: 1,
+                    clientname : 1
+                }
+            }
+        }
+    ]);
+    res.json(groupedDevices);
 
 
 }
+const GetDeviceByClient = async (req, res) => {
+    const {client} = req.body;
+    if(!client) return res.json({status : false ,  error: "failed, required parametres"});
+    const devices = await devicemodel.find({client : client}).
+    select({ __v: 0});
+    res.json(devices);
+}
 
 module.exports = {
-    AddDevice , GetDevice
+    AddDevice , GetDevice , GetDeviceByClient
 };

@@ -7,7 +7,6 @@ const modelLk = mongoose.Schema({
     version : String ,
     isMonopost : Boolean,
     licencekeyS:String,
-    lkSNumber : Number,
     licencekeyM:String,
     lkMNumber : Number,
     expireon:Date,
@@ -17,9 +16,6 @@ const modelLk = mongoose.Schema({
     Tk : String,
     date_activation : Date,
     userinfo : String,
-    os : String,
-    deviceinfo : String,
-    isvm : Boolean,
 })
 
 
