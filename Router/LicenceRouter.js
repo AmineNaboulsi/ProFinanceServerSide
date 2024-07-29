@@ -7,5 +7,6 @@ router.post("/newkey",LicenceController.newkey);
 router.post("/getlks",LicenceController.listLicence);
 router.post("/getbyId",LicenceController.LicenceByID);
 router.post("/uselicence",LicenceController.UseLicence);
+router.post("/lcV",LicenceController.LicenceStillValide);
 
 module.exports = router;

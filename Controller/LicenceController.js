@@ -86,7 +86,6 @@ const generateLicenseKey = (client, uniqueComponent) => {
 
     return formattedKey;
 }
-
 const listLicence = async (req, res) => {
     const { usertk } = req.body;
 
@@ -160,7 +159,7 @@ const UseLicence = async (req, res) => {
     
                 addDevice(licencedata._id, NameD, date_activation, isvm, os ,true  ,licencedata.client);
                 
-                res.json({ status: true , Tk :licencedata.Tk});
+                res.json({ status: true ,client :licencedata.client ,version :licencedata.version  , expireon : licencedata.expireon , Tk :licencedata.Tk});
             } else{
                 return res.json({ status : false , error: "Licence Expire" });
             }
@@ -171,7 +170,7 @@ const UseLicence = async (req, res) => {
                     res.json({ status : false , error: "(LicenseLimitError) You have reached the limit of 5 used machine licenses. Please contact support for further assistance." });
                 }else{
                     addDevice(licencedataM._id, NameD, date_activation, isvm, os ,false ,licencedataM.client);
-                    res.json({ status: true , Tk :licencedataM.Tk});
+                    res.json({ status: true  ,client :licencedataM.client  , version :licencedataM.version  , expireon : licencedataM.expireon , Tk :licencedataM.Tk});
                 }
             }else{
                 res.json({ status : false , error: "This license is still valid, Please try to add the server license first." });
@@ -185,6 +184,30 @@ const UseLicence = async (req, res) => {
         res.json({status : false , error: "Server error: " + error });
     }
 }
+
+const LicenceStillValide = async (req, res) => {
+    const { client ,tk } = req.body;
+
+    if (!client || !tk ) {
+        res.json({ status : false ,require: 'e' });
+        return;
+    }
+
+    const licence = await Licence.findOne({Tk : tk , client : client})
+    if(licence){
+        const currentDate = new Date();
+        const expireDate = new Date(licence.expireon);
+
+        if (currentDate < expireDate) res.json({ status : true , isvalide : true  });
+        else res.json({ status : true , isvalide : false });
+    }else{
+        res.json({ status : false ,error: '' });
+
+    }
+
+    
+}
+
 const addDevice = async (clientid , NameD, date_activation, isvm, os ,isS , clientname) =>{
 
     const device = new devicemodel({
@@ -317,5 +340,6 @@ module.exports = {
     newkey , 
     listLicence ,
     LicenceByID ,
-    UseLicence
+    UseLicence ,
+    LicenceStillValide
 }
