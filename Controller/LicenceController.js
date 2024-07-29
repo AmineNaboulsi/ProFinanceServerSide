@@ -201,8 +201,7 @@ const LicenceStillValide = async (req, res) => {
         if (currentDate < expireDate) res.json({ status : true , isvalide : true  });
         else res.json({ status : true , isvalide : false });
     }else{
-        res.json({ status : false ,error: '' });
-
+        res.json({ status : false ,error: 'The license you are using is not recognized or listed.' });
     }
 
     
