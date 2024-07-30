@@ -208,9 +208,9 @@ const LicenceStillValide = async (req, res) => {
 }
 
 const UpdateLicence = async (req, res) => {
-    const { id, date_expiredOn, version } = req.body;
+    const { id, date_expiredOn, version , v } = req.body;
 
-    if (!id || !date_expiredOn || !version) {
+    if (!id || !date_expiredOn || !version || v === undefined) {
         res.json({ status: false, require: 'e' });
         return;
     }
@@ -219,10 +219,16 @@ const UpdateLicence = async (req, res) => {
         const licencedata = await Licence.findOne({ _id: id });
         if (licencedata) {
             const filter = { _id: id };
-            const update = { 
-                expireon: date_expiredOn,
-                version: version
-            };
+            let update ={};
+            if(v){
+                update = { 
+                    version: version
+                };
+            }else{
+                update = { 
+                    expireon: date_expiredOn,
+                };
+            }
             const updatedLicence = await Licence.findByIdAndUpdate(filter, update, { new: true });
             res.json({ status: true, updatedLicence });
         } else {
