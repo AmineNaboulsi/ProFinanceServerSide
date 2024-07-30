@@ -128,7 +128,7 @@ const LicenceByID = async (req, res) => {
             res.json({ error: "Server error" + error })
         }
     }else{
-        res.json([])
+        res.json({status : false , error : 'licence not valide'})
     }
    
 }
@@ -207,6 +207,32 @@ const LicenceStillValide = async (req, res) => {
     
 }
 
+const UpdateLicence = async (req, res) => {
+    const { id, date_expiredOn, version } = req.body;
+
+    if (!id || !date_expiredOn || !version) {
+        res.json({ status: false, require: 'e' });
+        return;
+    }
+
+    try {
+        const licencedata = await Licence.findOne({ _id: id });
+        if (licencedata) {
+            const filter = { _id: id };
+            const update = { 
+                expireon: date_expiredOn,
+                version: version
+            };
+            const updatedLicence = await Licence.findByIdAndUpdate(filter, update, { new: true });
+            res.json({ status: true, updatedLicence });
+        } else {
+            res.json({ status: false, error: "Licence Not exist" });
+        }
+    } catch (error) {
+        res.json({ status: false, error: "Server error: " + error });
+    }
+}
+
 const addDevice = async (clientid , NameD, date_activation, isvm, os ,isS , clientname) =>{
 
     const device = new devicemodel({
@@ -276,7 +302,6 @@ const deleteProduct = async (req, res) => {
     }
 
 }
-
 const getProduct = async (req, res) => {
     const { id } = req.body;
     try {
@@ -335,10 +360,12 @@ const lessquantity = async (req, res) => {
         res.json({ error: "Server error" + error })
     }
 }
+
 module.exports = {
     newkey , 
     listLicence ,
     LicenceByID ,
     UseLicence ,
-    LicenceStillValide
+    LicenceStillValide ,
+    UpdateLicence
 }
