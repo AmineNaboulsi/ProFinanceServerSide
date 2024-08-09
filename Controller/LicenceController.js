@@ -159,7 +159,7 @@ const UseLicence = async (req, res) => {
     
                 addDevice(licencedata._id, NameD, date_activation, isvm, os ,true  ,licencedata.client);
                 
-                res.json({ status: true ,client :licencedata.client ,version :licencedata.version  , expireon : licencedata.expireon , Tk :licencedata.Tk});
+                res.json({ status: true ,client :licencedata.client ,version :licencedata.version  , expireon : licencedata.expireon , Tk :licencedata.Tk , SecureKey : process.env.SecureKey});
             } else{
                 return res.json({ status : false , error: "Licence Expire" });
             }
